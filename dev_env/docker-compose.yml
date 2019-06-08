@@ -1,0 +1,53 @@
+version: '2'
+services:
+  ipfs:
+    image: 'ipfs/go-ipfs:latest'
+    container_name: 'ipfs'
+    networks:
+      server:
+        ipv4_address: 10.1.0.9
+    ports:
+      - '0.0.0.0:4001:4001'
+      - '0.0.0.0:8080:8080'
+      - '0.0.0.0:5001:5001'
+    volumes:
+      - './ipfs/export:/export'
+      - './ipfs/ipfs:/data/ipfs'
+    restart: always
+  nodeos:
+    build: './eosio/cdt/build'
+    image: 'eosio'
+    container_name: 'nodeos'
+    networks: 
+      server:
+        ipv4_address: 10.1.0.8
+    ports: 
+      - '0.0.0.0:8888:8888'
+    volumes:
+      - './eosio/work:/work'
+      - './eosio/data:/mnt/dev/data'
+      - './eosio/config:/mnt/dev/config'
+      - './eosio/home:/root'
+      - '~/Contracts:/Contracts'
+    command: /bin/bash -c "nodeos -e -p eosio --plugin eosio::producer_plugin --plugin eosio::history_plugin --plugin eosio::chain_api_plugin --plugin eosio::history_api_plugin --plugin eosio::http_plugin -d /mnt/dev/data --config-dir /mnt/dev/config --http-server-address=0.0.0.0:8888 --access-control-allow-origin=* --contracts-console --http-validate-host=false"
+    restart: always
+  keosd:
+    build: './eosio/cdt/build'
+    image: 'eosio'
+    container_name: 'keosd'
+    networks: 
+      server:
+        ipv4_address: 10.1.0.7
+    ports: 
+      - '0.0.0.0:9876:9876'
+    volumes:
+      - './eosio/home:/root'
+    command: /bin/bash -c "keosd --http-server-address=0.0.0.0:9876"
+    restart: always
+networks:
+  server:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.1.0.0/16
+          gateway: 10.1.0.1
