@@ -172,3 +172,15 @@ cleos push action punchclock add '["2019-06-08 11:28:00", "A01", "ABCDEFG", "000
 ```
 root@a9e45804cee8:~/contracts# cleos get table [會員帳號] [上鏈的會員帳號] [資料表名]
 ```
+
+## EOSIO 開發工具
+1. 線上編輯器
+https://beosin.com/BEOSIN-IDE/index.html#/
+
+2. 測試鏈
+https://monitor.jungletestnet.io/
+
+## IPFS管理介面
+http://127.0.0.1:5001/webui
+
+PS. 不想連外，可以到後台Settings裡面，將Bootstrap陣列中資料清空
